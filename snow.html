@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        img {
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script>
+        const snowflakes = Array(100);
+
+        for (let i = 0; i < snowflakes.length; i++) {
+            const img = document.createElement('img');
+            img.src = 'https://img.icons8.com/ios/452/snowflake.png';
+            img.width = Math.floor(Math.random() * 6) + 5;
+            document.body.appendChild(img);
+
+            snowflakes[i] = {
+                elem: img,
+                x: window.innerWidth / snowflakes.length * i,
+                y: Math.floor(window.innerHeight * Math.random()),
+                yDirection: Math.random() * 2 + 1,
+                xDirection: 0,
+            };
+        }
+
+        let intervalId = setInterval(function () {
+            for (let i = 0; i < snowflakes.length; i++) {
+                const element = snowflakes[i];
+
+                let snowflakeHeight = parseInt(getComputedStyle(element.elem).height),
+                    snowflakeWidth = parseInt(getComputedStyle(element.elem).width);
+
+                element.x += element.xDirection;
+                element.y += element.yDirection;
+
+                if (element.y + snowflakeHeight >= window.innerHeight) {
+                    element.y = -snowflakeHeight;
+                    element.x = Math.floor(window.innerWidth * Math.random());
+                }
+
+                element.elem.style.top = element.y + 'px';
+                element.elem.style.left = element.x + 'px';
+            }
+        }, 17);
+
+        document.onmousemove = function (e) {
+            let direction;
+            let halfViewport = window.innerWidth / 2;
+            if (e.clientX < halfViewport) {
+                direction = halfViewport / e.clientX * -1;
+                if (direction < -3) {
+                    direction = -3;
+                }
+            } else {
+                let clientXReverse = halfViewport - (e.clientX % halfViewport);
+                direction = halfViewport / clientXReverse;
+                if (direction > 3) {
+                    direction = 3;
+                }
+            }
+            for (let i = 0; i < snowflakes.length; i++) {
+                const snowflake = snowflakes[i];
+                snowflake.xDirection = direction;
+            }
+        };
+    </script>
+</body>
+
+</html>
